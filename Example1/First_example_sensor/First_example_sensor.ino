@@ -5,11 +5,11 @@
  *  Divide by 2 because it's half the time to make the forward-bounce-backward
  */
 
- const int trigPin = 9; // Trigger pin = 10
- const int echoPin = 10; // Echo pin = 9
+ const int trigPin = 8; // Trigger pin = 10
+ const int echoPin = 9; // Echo pin = 9
 
  long duration; // Duration of the forward-bounce-backward signal
- int distance; // Distance (in cm) of the object and the sensor
+ int distance = 1000; // Distance (in cm) of the object and the sensor
 
 /**
  * setup() This function runs at the beginning only once.
@@ -20,31 +20,59 @@ void setup() {
 
   pinMode(trigPin,OUTPUT); // Trigger pin as an output
   pinMode(echoPin,INPUT); // Echo pin as an input
+  //Serial.begin(9600);
 }
 
 /**
  * The program's main loop.
  */
 void loop() {
-  // Clearing trigPin
-  digitalWrite(trigPin,LOW);
-  delayMicroseconds(10);
-
-  // Sending a pulse for 10 µs
-  digitalWrite(trigPin,HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin,LOW);
-
-  // Reading the echo pin for the return of the pulse
-  duration = pulseIn(echoPin, HIGH);
-
-  // Calculating the distance
-  distance = duration*0.034/2;
-
   if(distance<100){
-    digitalWrite(LED_BUILTIN,HIGH); // Turn the LED on if the obstacle is < 100cm away
+    // Clearing trigPin
+    digitalWrite(trigPin,LOW);
+    delayMicroseconds(10);
+  
+    // Sending a pulse for 10 µs
+    digitalWrite(trigPin,HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin,LOW);
+  
+    // Reading the echo pin for the return of the pulse
+    duration = pulseIn(echoPin, HIGH);
+  
+    // Calculating the distance
+    distance = duration*0.034/2;
+    //Serial.println(distance);
+  
+    if(distance<100){
+      digitalWrite(LED_BUILTIN,HIGH); // Turn the LED on if the obstacle is < 100cm away
+    }
+    else{
+      digitalWrite(LED_BUILTIN,LOW); // Turn the LED off if the obstacle is > 100cm away
+    } 
   }
   else{
-    digitalWrite(LED_BUILTIN,LOW); // Turn the LED off if the obstacle is > 100cm away
+    // Clearing trigPin
+    digitalWrite(trigPin,LOW);
+    delay(1000);
+  
+    // Sending a pulse for 10 µs
+    digitalWrite(trigPin,HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin,LOW);
+  
+    // Reading the echo pin for the return of the pulse
+    duration = pulseIn(echoPin, HIGH);
+  
+    // Calculating the distance
+    distance = duration*0.034/2;
+    //Serial.println(distance);
+  
+    if(distance<20){
+      digitalWrite(LED_BUILTIN,HIGH); // Turn the LED on if the obstacle is < 100cm away
+    }
+    else{
+      digitalWrite(LED_BUILTIN,LOW); // Turn the LED off if the obstacle is > 100cm away
+    }
   }
 }
