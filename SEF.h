@@ -3,9 +3,17 @@
   Library for the usage of SEFtool.
 */
 
+#ifndef _SEF_
+#define _SEF_
 
 #define INDOOR 0
 #define OUTDOOR 1
+
+/**
+  Initialization function of the library.
+  Must be called in setup().
+*/
+void initSEF();
 
 /**
   Verifies that the proximity sensor on the device is functioning.
@@ -51,3 +59,5 @@ void setMode(int mode);
   \return Current threshold for the obstacle detection
 */
 int getThreshold();
+
+#endif
