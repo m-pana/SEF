@@ -2,7 +2,6 @@
   \file SEF.h
   Library for the usage of SEFtool.
 */
-
 #ifndef _SEF_
 #define _SEF_
 
