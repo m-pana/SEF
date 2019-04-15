@@ -44,6 +44,13 @@ bool batteryLow();
 unsigned int readDistance();
 
 /**
+  Tells if the there's an obstacle ahead of the user in a high level way.
+
+  \return true if an obstacle has been detected, false otherwise
+*/
+bool obstacleDetected();
+
+/**
   Sets the operating mode to either indoors or outdoors.
   The mode is by default initialized to outdoors.
 

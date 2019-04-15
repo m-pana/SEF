@@ -13,6 +13,7 @@
 
 initSEF KEYWORD2
 readDistance KEYWORD2
+obstacleDetected KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

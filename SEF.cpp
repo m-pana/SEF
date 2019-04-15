@@ -5,11 +5,12 @@
 
 #include "Arduino.h"
 #include "SEF.h"
+#include "LowPower.h"
 
 #define _hcTrigPin 8
 #define _hcEchoPin 9
 
-unsigned int threshold;
+unsigned int threshold = 150;
 
 /* ------ INTERNAL UTILITY FUNCTIONS ------*/
 
@@ -33,8 +34,6 @@ unsigned int hc_read() {
   // Reading the echo pin for the return of the pulse.
   //This section is considered critical (interrupts disabled)
   noInterrupts();
-  /* Using the 3 args version of pulseIn because, apparently, the overloaded 2-args version is only supported in C++.
-  I'm giving as 3rd argument 1000000L, which is how the overloading is done in the standard library found in C:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino\Arduino.h*/
   duration = pulseIn(_hcEchoPin, HIGH);
   interrupts();
   // Calculating the distance
@@ -52,9 +51,33 @@ void initSEF() {
 }
 
 unsigned int readDistance() {
-  unsigned int distance;
+  return hc_read();
+}
 
-  distance = hc_read();
+bool obstacleDetected() {
+  // Does 3 readings. Power-down mode is entered in between each of them for 30ms.
+  // An obstacle is actually considered to be present of at least 2 of the 3 readings are positive
+  int positives = 0;
 
-  return distance;
+  for (int i = 0; i < 3; i++) {
+    if (hc_read() <= threshold) {
+      positives++;
+    }
+
+    // Don't sleep on last iteration
+    if (i != 2) {
+      LowPower.powerDown(SLEEP_30MS, ADC_OFF, BOD_OFF);
+    }
+  }
+
+  if (positives >= 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+int getThreshold() {
+  return threshold;
 }
