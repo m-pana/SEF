@@ -30,6 +30,18 @@ bool sensorActive();
 void audioWarning(unsigned int frequency, unsigned int millis);
 
 /**
+  Generates a warning to the user according to the argument given.
+  Depending on the argument, the function decides the behavior of the device.
+  For a correct behavior of the device, the parameter given must be the return value of the last call to obstacleDetected().
+
+  For debugging purposes: if the argument value is true, then the device will behave as if an obstacle has been detected.
+  A value of false will have the opposite effect.
+
+  \param detectionResult The return value of the last call to obstacleDetected().
+*/
+void userWarning(bool detectionResult);
+
+/**
   Checks if the battery of the device is running low.
 
   \returns true if the battery is low, false otherwise

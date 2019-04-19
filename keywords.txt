@@ -12,8 +12,9 @@
 #######################################
 
 initSEF KEYWORD2
-readDistance KEYWORD2
-obstacleDetected KEYWORD2
+readDistance  KEYWORD2
+obstacleDetected  KEYWORD2
+userWarning KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
