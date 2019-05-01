@@ -92,7 +92,47 @@ void userWarning(bool detectionResult) {
   } else {
     // if not, just sleep for 250ms
     LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
+  } 
+  
+  void sendWarning()
+{  
+   int low = 2; //something we will have to define ourselves
+   int sensorValue = analogRead(A0); //read the A0 pin value
+   //the analog reading goes from 0 to 1023 and we need to convert it as a voltage from 0 to 5V
+   float voltage = sensorValue * (5.00 / 1023.00) * 2; //convert the value to a true voltage. 
+
+   if (voltage <= low)
+   {
+        digitalWrite(_vibrationPin, HIGH);
+        LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
+        digitalWrite(_vibrationPin, LOW);
+   }  
+
+   
+} 
+
+void sensorActive()
+{
+  //test if a sensor is active by trying to detect if it detects something  
+   // Sending a pulse for 10 µs
+  digitalWrite(trigPin,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin,LOW);
+
+  // Reading the echo pin for the return of the pulse
+  duration = pulseIn(echoPin, HIGH);
+
+  
+  //pulseIn() method returns the length of the pulse (in microseconds) or 0 if no pulse started before the timeout (unsigned long) 
+  if (duration == 0)
+  {
+     //decide of a signal we could use 
+     //here the vibration 
+      digitalWrite(_vibrationPin, HIGH);
+      LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
+      digitalWrite(_vibrationPin, LOW);
   }
+}
 
   /*
   // --- Implementation Option B (as described in documentation)
