@@ -15,6 +15,8 @@ initSEF KEYWORD2
 readDistance  KEYWORD2
 obstacleDetected  KEYWORD2
 userWarning KEYWORD2
+obstacleDistance KEYWORD2
+userWarningVariable KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

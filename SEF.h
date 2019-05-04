@@ -42,6 +42,17 @@ void audioWarning(unsigned int frequency, unsigned int millis);
 void userWarning(bool detectionResult);
 
 /**
+  Generates a warning to the user according to the argument given.
+  Depending on the argument, the function decides the behavior of the device.
+  For a correct behavior of the device, the parameter given must be the return value of the last call to obstacleDistance().
+
+  Depening on the distance of the obstacle, the feedback given to the user will be different.
+
+  \param detectionResult The return value of the last call to obstacleDistance().
+*/
+void userWarningVariable(int detectionResult);
+
+/**
   Checks if the battery of the device is running low.
 
   \returns true if the battery is low, false otherwise
@@ -50,6 +61,7 @@ bool batteryLow();
 
 /**
   Reads the distance currently detected by the proximity sensor.
+  The reading is only performed once, without further security checks.
 
   \return The distance detected from the current object in centimeters
 */
@@ -61,6 +73,16 @@ unsigned int readDistance();
   \return true if an obstacle has been detected, false otherwise
 */
 bool obstacleDetected();
+
+/**
+  Reads and returns the current distance from an obstacle.
+  Multiple readings are performed to ensure that the reading is correct.
+  If there are more positives than negatives, the positives are averaged and the result is returned.
+  If there are more negatives than positives, the negatives are averaged and the result is returned.
+
+  \return the best estimation possible for the distance of an obstacle ahead.
+*/
+int obstacleDistance();
 
 /**
   Sets the operating mode to either indoors or outdoors.
