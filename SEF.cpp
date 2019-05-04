@@ -11,6 +11,8 @@
 #define _vibrationPin 7
 #define _hcTrigPin 8
 #define _hcEchoPin 9
+#define _numReadings 3
+#define _minPositives 2
 
 unsigned int threshold = 150;
 
@@ -64,18 +66,18 @@ bool obstacleDetected() {
   // An obstacle is actually considered to be present of at least 2 of the 3 readings are positive
   int positives = 0;
 
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < _numReadings; i++) {
     if (hc_read() <= threshold) {
       positives++;
     }
 
     // Don't sleep on last iteration
-    if (i != 2) {
+    if (i != (_numReadings - 1)) {
       LowPower.powerDown(SLEEP_30MS, ADC_OFF, BOD_OFF);
     }
   }
 
-  if (positives >= 2) {
+  if (positives >= _minPositives) {
     return true;
   } else {
     return false;
@@ -94,19 +96,35 @@ void userWarning(bool detectionResult) {
     LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
   }
 
+
+
   /*
+  // --- Implementation Option C (as described in documentation)
+  // turn off vibration anyway and sleep for 60ms
+  digitalWrite(_vibrationPin, LOW);
+  LowPower.powerDown(SLEEP_60MS, ADC_OFF, BOD_OFF);
+  // if found, then turn vibration on; otherwise do nothing (vibration stays off)
+  if (detectionResult == true) {
+    digitalWrite(_vibrationPin, HIGH);
+  }
+  */
+
+}
+
+void userWarningVariable(int detectionResult) {
   // --- Implementation Option B (as described in documentation)
-  if (detectionResult == false) {
+  if (detectionResult > threshold) {
     // if not found, sleep for 280ms
+    digitalWrite(_vibrationPin, LOW);
     LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
     LowPower.powerDown(SLEEP_30MS, ADC_OFF, BOD_OFF);
-  } else if (below 1/3 of threshold) {
+  } else if (detectionResult <= threshold/3) {
     // Vibrate for 280ms
     digitalWrite(_vibrationPin, HIGH);
     LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
     LowPower.powerDown(SLEEP_30MS, ADC_OFF, BOD_OFF);
     digitalWrite(_vibrationPin, LOW);
-  } else if (below 2/3 of threshold) {
+  } else if (detectionResult <= 2*threshold/3) {
     // Alternate 120ms of vibration and 60ms of sleep
     digitalWrite(_vibrationPin, HIGH);
     LowPower.powerDown(SLEEP_120MS, ADC_OFF, BOD_OFF);
@@ -129,20 +147,8 @@ void userWarning(bool detectionResult) {
 
     digitalWrite(_vibrationPin, HIGH);
     LowPower.powerDown(SLEEP_60MS, ADC_OFF, BOD_OFF);
+    digitalWrite(_vibrationPin, LOW);
   }
-  */
-
-  /*
-  // --- Implementation Option C (as described in documentation)
-  // turn off vibration anyway and sleep for 60ms
-  digitalWrite(_vibrationPin, LOW);
-  LowPower.powerDown(SLEEP_60MS, ADC_OFF, BOD_OFF);
-  // if found, then turn vibration on; otherwise do nothing (vibration stays off)
-  if (detectionResult == true) {
-    digitalWrite(_vibrationPin, HIGH);
-  }
-  */
-
 }
 
 void sendWarning()
@@ -162,16 +168,17 @@ void sendWarning()
 
 }
 
-void sensorActive()
+bool sensorActive()
 {
+  int duration;
   //test if a sensor is active by trying to detect if it detects something
    // Sending a pulse for 10 µs
-  digitalWrite(trigPin,HIGH);
+  digitalWrite(_hcTrigPin,HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin,LOW);
+  digitalWrite(_hcTrigPin,LOW);
 
   // Reading the echo pin for the return of the pulse
-  duration = pulseIn(echoPin, HIGH);
+  duration = pulseIn(_hcEchoPin, HIGH);
 
 
   //pulseIn() method returns the length of the pulse (in microseconds) or 0 if no pulse started before the timeout (unsigned long)
@@ -183,8 +190,55 @@ void sensorActive()
       LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
       digitalWrite(_vibrationPin, LOW);
   }
+  // DEBUG PURPOSES: return type was incorrect. returning true to make the whole thing compile. Needs to be changed.
+  return true;
 }
 
 int getThreshold() {
   return threshold;
+}
+
+int obstacleDistance() {
+  // Does 3 readings. Power-down mode is entered in between each of them for 30ms.
+  // An obstacle is actually considered to be present of at least 2 of the 3 readings are positive.
+  // The readings and positives are stored in a readings and flags vector
+  int positives = 0;
+  int readings[_numReadings], flags[_numReadings];
+  int distance = 0;
+
+  for (int i = 0; i < _numReadings; i++) {
+    if ((readings[i] = hc_read()) <= threshold) {
+      // Remember what readings were positives and which were negatives
+      flags[i] = 1;
+      positives++;
+    } else {
+      flags[i] = 0;
+    }
+
+    // Don't sleep on last iteration
+    if (i != 2) {
+      LowPower.powerDown(SLEEP_30MS, ADC_OFF, BOD_OFF);
+    }
+  }
+
+
+  if (positives >= _minPositives) {
+    // If the positives were greater or equal than the minimum, average and return them
+    for (int i = 0; i < _numReadings; i++) {
+      if (flags[i]) {
+        distance += readings[i];
+      }
+    }
+    distance /= positives;
+    return distance;
+  } else {
+    // If there were fewer positives than the minimum, average the negatives and return them
+    for (int i = 0; i < _numReadings; i++) {
+      if (!flags[i]) {
+        distance += readings[i];
+      }
+    }
+    distance /= (_numReadings - positives);
+    return distance;
+  }
 }
