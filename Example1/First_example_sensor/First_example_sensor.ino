@@ -5,8 +5,8 @@
  *  Divide by 2 because it's half the time to make the forward-bounce-backward
  */
 
- const int trigPin = 8; // Trigger pin = 10
- const int echoPin = 9; // Echo pin = 9
+ const int trigPin = 9; // Trigger pin = 10
+ const int echoPin = 10; // Echo pin = 9
 
  long duration; // Duration of the forward-bounce-backward signal
  int distance = 1000; // Distance (in cm) of the object and the sensor

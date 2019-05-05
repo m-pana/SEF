@@ -3,7 +3,7 @@
   Testing was actually done with a SPDT switch, (single pole, double throw), which can behave like a SPST by leaving one throw floating.
 */
 
-#define LEDPIN 7
+#define LEDPIN 8
 #define INTPIN 2
 
 int mode;
