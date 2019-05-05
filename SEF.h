@@ -15,6 +15,12 @@
 void initSEF();
 
 /**
+ * Initialization function of the interrupt.
+ * Must be called in setup().
+ */
+void initInterrupt();
+
+/**
   Verifies that the proximity sensor on the device is functioning.
   \returns true if the sensor is responding, false otherwise
 */
@@ -99,5 +105,11 @@ void setMode(int mode);
   \return Current threshold for the obstacle detection
 */
 int getThreshold();
+
+/**
+ * Interrupt called function
+ * Changes the mode of the device between indoor and outdoor
+ */
+void toggleMode();
 
 #endif

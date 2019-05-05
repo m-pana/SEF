@@ -13,8 +13,10 @@
 #define _hcEchoPin 9
 #define _numReadings 3
 #define _minPositives 2
+#define _modeSwitch 4 // TBD, switch to trigger the interrupt
 
 unsigned int threshold = 150;
+int mode; // Value for the interrupt (indoor or outdoor)
 
 /* ------ INTERNAL UTILITY FUNCTIONS ------*/
 
@@ -55,6 +57,16 @@ void initSEF() {
   // HC-SR04 setup
   pinMode(_hcTrigPin, OUTPUT); // Trigger pin as an output
   pinMode(_hcEchoPin, INPUT); // Echo pin as an input
+}
+
+
+void initInterrupt(){
+  pinMode(_modeSwitch, INPUT_PULLUP); // Setting up the pullup
+  mode = (digitalRead(_modeSwitch) == HIGH ? OUTDOOR : INDOOR);
+  setMode(mode);
+
+  //Setting up the ISR to trigger when a change happens in _modeSwitch pin
+  attachInterrupt(digitalPinToInterrupt(INTPIN), toggleMode, CHANGE);
 }
 
 unsigned int readDistance() {
@@ -237,5 +249,20 @@ int obstacleDistance() {
     }
     distance /= (_numReadings - positives);
     return distance;
+  }
+}
+
+
+void toggleMode() {
+  mode = !mode;
+  setMode(mode);
+}
+
+void setMode(int mode){
+  if(mode){ // OUTDOOR mode
+    threshold=150; // 150cm, TBD
+  }
+  else{ // INTDOOR mode
+    threshold=50; // 50cm, TBD
   }
 }
