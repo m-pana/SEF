@@ -96,8 +96,6 @@ void userWarning(bool detectionResult) {
     LowPower.powerDown(SLEEP_250MS, ADC_OFF, BOD_OFF);
   }
 
-
-
   /*
   // --- Implementation Option C (as described in documentation)
   // turn off vibration anyway and sleep for 60ms
@@ -108,7 +106,6 @@ void userWarning(bool detectionResult) {
     digitalWrite(_vibrationPin, HIGH);
   }
   */
-
 }
 
 void userWarningVariable(int detectionResult) {
