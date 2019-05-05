@@ -29,12 +29,13 @@ void loop() {
 }
 
 void toggleMode() {
-  // toggle the mode and act accordingly
+  // toggle the mode and act accordingly. This is the ISR, it just changes the value if "mode" to the opposite state and delegates to changeMode
   mode = !mode;
   changeMode(mode);
 }
 
 void changeMode(int mode) {
+  // Utility function to change the actual state of the pin. It was made a standalone function because it's not only used by the ISR, but also by the setup
    if (mode) {
     digitalWrite(LEDPIN, HIGH);
   } else {
