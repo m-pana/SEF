@@ -5,6 +5,7 @@
 
 #define LEDPIN 8
 #define INTPIN 2
+#define buzpin 6
 
 int mode;
 int initialState;
@@ -12,6 +13,7 @@ int initialState;
 void setup() {
   // Setting up the pin 7 to be an output for the LED (to be turned on and off in the ISR)
   pinMode(LEDPIN, OUTPUT);
+  pinMode(buzpin, OUTPUT);
   pinMode(INTPIN, INPUT_PULLUP); //using the pullup like a pro
   // To know what the starting state is, we read from the INTPIN first
   initialState = digitalRead(INTPIN);
@@ -32,6 +34,9 @@ void toggleMode() {
   // toggle the mode and act accordingly. This is the ISR, it just changes the value if "mode" to the opposite state and delegates to changeMode
   mode = !mode;
   changeMode(mode);
+  tone(buzpin, 1000);
+  delay(600);
+  noTone(buzpin);
 }
 
 void changeMode(int mode) {
