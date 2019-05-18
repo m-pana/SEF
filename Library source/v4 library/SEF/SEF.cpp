@@ -158,23 +158,9 @@ bool obstacleDetected() {
       positives++;
     }
 
-
-
-    if (i==0)
-    {
-      //checks battery level on first reading
-      lowBattery = testBatteryLow();
-    }
-
     // Don't sleep on last iteration
     if (i != (_numReadings - 1)) {
       LowPower.powerDown(SLEEP_30MS, ADC_OFF, BOD_OFF);
-
-      if (lowBattery == true)
-      {
-         //we turn off the buzzer activated by testBatteryLow() if the battery is low at the 3rd reading
-         stopWarningBatteryLow();
-      }
     }
   }
 
@@ -270,13 +256,10 @@ bool testBatteryLow()
    Serial.flush();
    #endif
 
-   if (voltage <= low)
-   {
+   if (voltage <= low) {
         lowBattery = true;
-
    }
 
-   //decided to stop the tone in other parts of the code, since the duration of the sound depends on the signal
    return lowBattery;
 }
 
@@ -330,14 +313,13 @@ int getThreshold() {
   return currentThreshold;
 }
 
-int obstacleDistance(int countBatteryWarnings) {
+int obstacleDistance() {
   // Does 3 readings. Power-down mode is entered in between each of them for 30ms.
   // An obstacle is actually considered to be present of at least 2 of the 3 readings are positive.
   // The readings and positives are stored in a readings and flags vector
   int positives = 0;
   int readings[_numReadings], flags[_numReadings];
   int distance = 0;
-  bool lowBattery;
   noInterrupts();
   int currentThreshold = threshold;
   interrupts();
@@ -350,26 +332,6 @@ int obstacleDistance(int countBatteryWarnings) {
     } else {
       flags[i] = 0;
     }
-
-
-    if (i==0) //checks battery level on first reading (first iteration)
-    {
-
-      lowBattery = testBatteryLow();
-
-      if ( (lowBattery == true) && (countBatteryWarnings <= 7) )
-      {
-        startWarningBatteryLow();
-      }
-      else if ( lowBattery == true )
-      {
-        stopWarningBatteryLow();
-      }
-    }
-
-
-
-
 
     // Don't sleep on last iteration
     if (i != 2) {

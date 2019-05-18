@@ -78,7 +78,7 @@ int getThreshold();
   If there are more negatives than positives, the negatives are averaged and the result is returned.
   \return the best estimation possible for the distance of an obstacle ahead.
 */
-int obstacleDistance(int countBatteryWarnings);
+int obstacleDistance();
 
 /**
   Sends an audio warning to the user and PERMANENTLY STOPS THE DEVICE.
@@ -96,11 +96,11 @@ void toggleMode();
   The mode is by default initialized to outdoors.
   \param mode The mode in which the device operates. Can either be OUTDOOR or INDOOR.
 */
-void setMode(int mode);  
+void setMode(int mode);
 
 void beeping(int frequency);
 
-
-
+void startWarningBatteryLow();
+void stopWarningBatteryLow();
 
 #endif
