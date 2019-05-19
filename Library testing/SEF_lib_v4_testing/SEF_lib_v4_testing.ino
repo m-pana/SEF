@@ -4,8 +4,8 @@
 int detectionResult = 0;
 bool detectionResultBool;
 int th = getThreshold();
+int countBatteryWarnings = 0;
 char out[100];
-int countBatteryWarnings = 0; 
 
 void setup() {
   initSEF();
@@ -13,13 +13,21 @@ void setup() {
   beeping(1000);
   delay(500);
   beeping(1000);
+  delay(500);
 }
 
 void loop() {
-
-  if ( testSensorActive() == true && testVibrationActive() == true) {
+  // Battery level is tested before BDP
+  if (countBatteryWarnings < 5 && testBatteryLow() == true) {
+    startWarningBatteryLow();
+    countBatteryWarnings++;
+    delay(100);
+    stopWarningBatteryLow();
+  }
+  
+  if (testSensorActive() == true && testVibrationActive() == true) {
     //detectionResultBool = obstacleDetected();
-    detectionResult = obstacleDistance(countBatteryWarnings);
+    detectionResult = obstacleDistance();
 
     // printing to serial monitor for debugging purposes
     noInterrupts();
@@ -30,16 +38,13 @@ void loop() {
     Serial.flush();
     interrupts();
 
-    if ( testBatteryLow() == true ) 
-    {
-      countBatteryWarnings = countBatteryWarnings + 1; 
-    }
-
     userWarningVariable(detectionResult);
     //userWarning(detectionResultBool);
     
   } else {
     malfunctionHalt();
   }
+
+  
 
 }
