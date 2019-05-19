@@ -29,6 +29,11 @@
 volatile unsigned int threshold = 150;
 volatile int mode; // Value for the interrupt (indoor or outdoor)
 
+#ifdef DEBUG
+#include <LiquidCrystal.h>
+const int en = 50, rs = 51, d7 = 37, d6 = 36, d5 = 35, d4 = 34;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+#endif
 
 
 /* ------ INTERNAL UTILITY FUNCTIONS ------*/
@@ -136,6 +141,11 @@ void initSEF() {
   initHCSR04();
   initBuzzer();
   initSwitch();
+
+  #ifdef DEBUG
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
+  #endif
 }
 
 unsigned int readDistance() {
@@ -254,6 +264,9 @@ bool testBatteryLow()
    Serial.flush();
    Serial.println(voltage);
    Serial.flush();
+
+   lcd.print(voltage);
+   lcd.setCursor(0, 0);
    #endif
 
    if (voltage <= low) {
