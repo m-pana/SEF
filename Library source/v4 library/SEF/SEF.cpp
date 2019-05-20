@@ -9,6 +9,8 @@
 
 #define DEBUG
 
+// --- TODO: refactor as layered model! ---
+
 /* ------ PIN LAYOUT ------ */
 #define _buzzerPin 6
 
@@ -25,6 +27,7 @@
 
 #define _malfunctioningFrequency 3500
 #define _batteryFrequency 700
+#define _startFrequency 100
 
 volatile unsigned int threshold = 150;
 volatile int mode; // Value for the interrupt (indoor or outdoor)
@@ -59,7 +62,7 @@ void initHCSR04() {
 }
 
 /**
-  Internal utility function for initializing the buzzer
+  Internal utility function for initializing the buzzer.
 */
 void initBuzzer() {
   // Buzzer setup
@@ -67,7 +70,7 @@ void initBuzzer() {
 }
 
 /**
-  Internal utility function for initializing the switch
+  Internal utility function for initializing the switch.
 */
 void initSwitch(){
   pinMode(_modeSwitch, INPUT_PULLUP); // Setting up the pullup
@@ -106,33 +109,41 @@ unsigned int hc_read() {
   return distance;
 }
 
+void batteryLowWarning() {
+  startWarningBatteryLow();
+  delay(100);
+  stopWarningBatteryLow();
+}
+
+/**
+  Internal utility function to start the battery low warning.
+*/
 void startWarningBatteryLow()
 {
     tone(_buzzerPin, _batteryFrequency); // Send 1KHz sound signal...
 }
 
+/**
+  Internal utility function to stop the battery low warning.
+*/
 void stopWarningBatteryLow()
 {
    noTone(_buzzerPin);
 }
 
+/**
+  Internal utility function to start the battery malfunctioning warning.
+*/
 void startWarningMalfunctioning() {
   tone(_buzzerPin, _malfunctioningFrequency);
 }
 
+/**
+  Internal utility function to stop the battery malfunctioning warning.
+*/
 void stopWarningMalfunctioning() {
   noTone(_buzzerPin);
 }
-
-void beeping(int frequency)
-{
-   tone(_buzzerPin, frequency);
-   delay(300);
-   noTone(_buzzerPin);
-
-}
-
-
 
 
 /* ------ LIBRARY HEADER FUNCTIONS ------*/
@@ -141,6 +152,12 @@ void initSEF() {
   initHCSR04();
   initBuzzer();
   initSwitch();
+
+  // Makes two beeps to signal that the device is on
+  makeBeep(150, _startFrequency);
+  delay(80);
+  makeBeep(150, _startFrequency);
+  delay(80);
 
   #ifdef DEBUG
   lcd.begin(16, 2);
@@ -182,7 +199,7 @@ bool obstacleDetected() {
 }
 
 void userWarning(bool detectionResult) {
-  // --- Implementation Option A (as described in documentation)
+  // --- Warning Option A (as described in project report)
   if (detectionResult == true) {
     // if found, vibrate for 250ms
     digitalWrite(_vibrationPin, HIGH);
@@ -194,7 +211,7 @@ void userWarning(bool detectionResult) {
   }
 
   /*
-  // --- Implementation Option C (as described in documentation)
+  // --- Warning Option C (as described in project report)
   // turn off vibration anyway and sleep for 60ms
   digitalWrite(_vibrationPin, LOW);
   LowPower.powerDown(SLEEP_60MS, ADC_OFF, BOD_OFF);
@@ -210,7 +227,8 @@ void userWarningVariable(int detectionResult) {
   int currentThreshold = threshold;
   interrupts();
 
-  // --- Implementation Option B (as described in documentation)
+  // --- Implementation Option B (as described in prohect report)
+  // -- The most advanced of all implementations and the one employed in the final version of the application level
   if (detectionResult > currentThreshold) {
     // if not found, sleep for 280ms
     digitalWrite(_vibrationPin, LOW);
@@ -298,7 +316,7 @@ bool testSensorActive()
   return sensorResponding;
 }
 
-bool testVibrationActive()
+bool testWarningActive()
 {
   // Momentarily set the vibrating unit input with pullup
   pinMode(_vibrationPin, INPUT_PULLUP);
@@ -402,4 +420,12 @@ void setMode(int mode){
   } else { // INTDOOR mode
     threshold = 150;
   }
+}
+
+void makeBeep(int duration, int frequency)
+{
+   tone(_buzzerPin, frequency);
+   delay(duration);
+   noTone(_buzzerPin);
+
 }

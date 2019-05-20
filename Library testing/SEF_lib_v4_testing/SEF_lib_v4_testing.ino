@@ -9,22 +9,16 @@ char out[100];
 
 void setup() {
   initSEF();
-  Serial.begin(9600);
-  beeping(1000);
-  delay(500);
-  beeping(1000);
-  delay(500);
+  Serial.begin(9600); // For debugging purposes
 }
 
 void loop() {
   // Battery level is tested before BDP
   if (countBatteryWarnings < 5 && testBatteryLow() == true) {
-    startWarningBatteryLow();
     countBatteryWarnings++;
-    delay(100);
-    stopWarningBatteryLow();
+    batteryLowWarning();
   }
-  
+
   if (testSensorActive() == true && testVibrationActive() == true) {
     //detectionResultBool = obstacleDetected();
     detectionResult = obstacleDistance();
@@ -40,11 +34,11 @@ void loop() {
 
     userWarningVariable(detectionResult);
     //userWarning(detectionResultBool);
-    
+
   } else {
     malfunctionHalt();
   }
 
-  
+
 
 }

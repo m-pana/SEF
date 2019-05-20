@@ -1,11 +1,20 @@
 /**
   \file SEF.h
-  Library for the usage of SEFtool.
+  Library for the usage of SEF tool.
 */
 #ifndef _SEF_
 #define _SEF_
 
+/**
+  Value defined to be used as parameter for setMode().
+  Represents Indoor mode.
+*/
 #define INDOOR 0
+
+/**
+  Value defined to be used as parameter for setMode().
+  Represents Outdoor mode.
+*/
 #define OUTDOOR 1
 
 /**
@@ -62,7 +71,7 @@ bool testSensorActive();
   Verifies that the vibrating unit on the device is functioning.
   \returns true if the vibrating unit is connected, false otherwise
 */
-bool testVibrationActive();
+bool testWarningActive();
 
 /**
   Returns the current threshold for the obstacle detection.
@@ -98,9 +107,15 @@ void toggleMode();
 */
 void setMode(int mode);
 
-void beeping(int frequency);
+/**
+  Makes the device produce a short beeping sound at the given frequency.
+  \param frequency The frequency of the beeping sound emitted in Hertz
+*/
+void makeBeep(int duration, int frequency);
 
-void startWarningBatteryLow();
-void stopWarningBatteryLow();
+/**
+  Produces a warning associated to a low battery level.
+*/
+void batteryLowWarning();
 
 #endif
