@@ -1,5 +1,5 @@
 /**
-  \file SEF.c
+  \file SEF.cpp
   Implementation of the SEF library.
 */
 
