@@ -19,7 +19,7 @@ void loop() {
     batteryLowWarning();
   }
 
-  if (testSensorActive() == true && testVibrationActive() == true) {
+  if (testSensorActive() == true && testWarningActive() == true) {
     //detectionResultBool = obstacleDetected();
     detectionResult = obstacleDistance();
 
