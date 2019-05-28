@@ -25,9 +25,9 @@
 
 #define _modeSwitch 2 // TBD, switch to trigger the interrupt
 
-#define _malfunctioningFrequency 3500
-#define _batteryFrequency 700
-#define _startFrequency 100
+#define _malfunctioningFrequency 3135 // Very high G note
+#define _batteryFrequency 987 // High B note
+#define _startFrequency 440 // Middle A note
 
 volatile unsigned int threshold = 150;
 volatile int mode; // Value for the interrupt (indoor or outdoor)
@@ -107,12 +107,6 @@ unsigned int hc_read() {
   distance = duration*0.034/2;
 
   return distance;
-}
-
-void batteryLowWarning() {
-  startWarningBatteryLow();
-  delay(100);
-  stopWarningBatteryLow();
 }
 
 /**
@@ -428,4 +422,10 @@ void makeBeep(int duration, int frequency)
    delay(duration);
    noTone(_buzzerPin);
 
+}
+
+void batteryLowWarning() {
+  startWarningBatteryLow();
+  delay(100);
+  stopWarningBatteryLow();
 }

@@ -1,6 +1,8 @@
 #include <SEF.h>
 #include <LowPower.h>
 
+#define SKETCH_DBG
+
 int detectionResult = 0;
 bool detectionResultBool;
 int th = getThreshold();
@@ -23,6 +25,7 @@ void loop() {
     //detectionResultBool = obstacleDetected();
     detectionResult = obstacleDistance();
 
+    #ifdef SKETCH_DBG
     // printing to serial monitor for debugging purposes
     noInterrupts();
     Serial.flush();
@@ -31,6 +34,7 @@ void loop() {
     Serial.println(out);
     Serial.flush();
     interrupts();
+    #endif
 
     userWarningVariable(detectionResult);
     //userWarning(detectionResultBool);
