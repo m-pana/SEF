@@ -11,7 +11,10 @@ char out[100];
 
 void setup() {
   initSEF();
+  
+  #ifdef SKETCH_DBG
   Serial.begin(9600); // For debugging purposes
+  #endif
 }
 
 void loop() {
