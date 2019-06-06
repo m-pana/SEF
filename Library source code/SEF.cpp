@@ -72,7 +72,7 @@ void initBuzzer() {
 /**
   Internal utility function for initializing the switch.
 */
-void initSwitch(){
+void initSwitch() {
   pinMode(_modeSwitch, INPUT_PULLUP); // Setting up the pullup
   mode = (digitalRead(_modeSwitch) == HIGH ? OUTDOOR : INDOOR);
   setMode(mode);
@@ -112,16 +112,14 @@ unsigned int hc_read() {
 /**
   Internal utility function to start the battery low warning.
 */
-void startWarningBatteryLow()
-{
+void startWarningBatteryLow() {
     tone(_buzzerPin, _batteryFrequency); // Send 1KHz sound signal...
 }
 
 /**
   Internal utility function to stop the battery low warning.
 */
-void stopWarningBatteryLow()
-{
+void stopWarningBatteryLow() {
    noTone(_buzzerPin);
 }
 
@@ -262,9 +260,7 @@ void userWarningVariable(int detectionResult) {
 }
 
 
-bool testBatteryLow()
-{
-
+bool testBatteryLow() {
   bool lowBattery = false;
 
    float low = 3.2; //something we will have to define ourselves
@@ -289,8 +285,7 @@ bool testBatteryLow()
 }
 
 
-bool testSensorActive()
-{
+bool testSensorActive() {
   int duration;
   bool sensorResponding = true; // Status defaults to true, later changed to false if needed
   //test if a sensor is active by trying to detect if it detects something
@@ -310,8 +305,7 @@ bool testSensorActive()
   return sensorResponding;
 }
 
-bool testWarningActive()
-{
+bool testWarningActive() {
   // Momentarily set the vibrating unit input with pullup
   pinMode(_vibrationPin, INPUT_PULLUP);
 
@@ -408,7 +402,7 @@ void toggleMode() {
   setMode(mode);
 }
 
-void setMode(int mode){
+void setMode(int mode) {
   if (mode == OUTDOOR) { // OUTDOOR mode
     threshold = 300;
   } else { // INTDOOR mode
@@ -416,8 +410,7 @@ void setMode(int mode){
   }
 }
 
-void makeBeep(int duration, int frequency)
-{
+void makeBeep(int duration, int frequency) {
    tone(_buzzerPin, frequency);
    delay(duration);
    noTone(_buzzerPin);
