@@ -5,9 +5,10 @@ This repository contains the documentation needed for the development of a porta
 The tool performs close-range obstacle detection by using a proximity sensor which can be directed by the user through wrist movement.
 When an obstacle is encountered, the device sends out a vibrating signal to the user as a warning. The intensity of the vibration varies according to the distance of the obstruction: the closer it is, the stronger the signal. 
 
-This  project is made using Arduino technology,  therefore you can find the code corresponding in the "Application" file. The documentation for the library associated is on the "Library documentation" and "Library source code" file. The electric schematics for the prototype and the final version are stored in the "Hardware schematics" file. Regarding the casing 3D models, they can be found in the "Casing" file. 
-
-
+- This project is made using Arduino technology: the Arduino sketch can be found in the "Application" folder. 
+- The documentation for the hardware library can be found the "docs" folder, inside the "index.html" file.
+- The electronic schematics for the prototype and the final version are stored in the "Hardware schematics" folder.
+- The 3D models of the casing can be found in the "Casing" folder. 
 
 
 
